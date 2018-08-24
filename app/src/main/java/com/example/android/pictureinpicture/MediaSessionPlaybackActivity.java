@@ -113,7 +113,7 @@ public class MediaSessionPlaybackActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // View references
-        mMovieView = findViewById(R.id.movie);
+//        mMovieView = findViewById(R.id.movie);
         mScrollView = findViewById(R.id.scroll);
         Button switchExampleButton = findViewById(R.id.switch_example);
         switchExampleButton.setText(getString(R.string.switch_custom));

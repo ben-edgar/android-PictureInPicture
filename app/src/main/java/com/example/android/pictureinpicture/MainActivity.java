@@ -32,6 +32,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Rational;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ScrollView;
 
 import com.example.android.pictureinpicture.widget.MovieView;
@@ -67,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
             new PictureInPictureParams.Builder();
 
     /** This shows the video. */
-    private MovieView mMovieView;
+    private ImageView imageView;
 
     /** The bottom half of the screen; hidden on landscape */
     private ScrollView mScrollView;
@@ -175,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
         mPause = getString(R.string.pause);
 
         // View references
-        mMovieView = findViewById(R.id.movie);
+        imageView = findViewById(R.id.image);
         mScrollView = findViewById(R.id.scroll);
 
         Button switchExampleButton = findViewById(R.id.switch_example);
@@ -183,7 +184,6 @@ public class MainActivity extends AppCompatActivity {
         switchExampleButton.setOnClickListener(new SwitchActivityOnClick());
 
         // Set up the video; it automatically starts.
-        mMovieView.setMovieListener(mMovieListener);
         findViewById(R.id.pip).setOnClickListener(mOnClickListener);
     }
 
@@ -191,7 +191,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         // On entering Picture-in-Picture mode, onPause is called, but not onStop.
         // For this reason, this is the place where we should pause the video playback.
-        mMovieView.pause();
         super.onStop();
     }
 
@@ -200,7 +199,6 @@ public class MainActivity extends AppCompatActivity {
         super.onRestart();
         if (!isInPictureInPictureMode()) {
             // Show the video controls so the video can be easily resumed.
-            mMovieView.showControls();
         }
     }
 
@@ -224,49 +222,47 @@ public class MainActivity extends AppCompatActivity {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, configuration);
         if (isInPictureInPictureMode) {
             // Starts receiving events from action items in PiP mode.
-            mReceiver =
-                    new BroadcastReceiver() {
-                        @Override
-                        public void onReceive(Context context, Intent intent) {
-                            if (intent == null
-                                    || !ACTION_MEDIA_CONTROL.equals(intent.getAction())) {
-                                return;
-                            }
-
-                            // This is where we are called back from Picture-in-Picture action
-                            // items.
-                            final int controlType = intent.getIntExtra(EXTRA_CONTROL_TYPE, 0);
-                            switch (controlType) {
-                                case CONTROL_TYPE_PLAY:
-                                    mMovieView.play();
-                                    break;
-                                case CONTROL_TYPE_PAUSE:
-                                    mMovieView.pause();
-                                    break;
-                            }
-                        }
-                    };
-            registerReceiver(mReceiver, new IntentFilter(ACTION_MEDIA_CONTROL));
+//            mReceiver =
+//                    new BroadcastReceiver() {
+//                        @Override
+//                        public void onReceive(Context context, Intent intent) {
+//                            if (intent == null
+//                                    || !ACTION_MEDIA_CONTROL.equals(intent.getAction())) {
+//                                return;
+//                            }
+//
+//                            // This is where we are called back from Picture-in-Picture action
+//                            // items.
+//                            final int controlType = intent.getIntExtra(EXTRA_CONTROL_TYPE, 0);
+//                            switch (controlType) {
+//                                case CONTROL_TYPE_PLAY:
+//                                    break;
+//                                case CONTROL_TYPE_PAUSE:
+//                                    break;
+//                            }
+//                        }
+//                    };
+//            registerReceiver(mReceiver, new IntentFilter(ACTION_MEDIA_CONTROL));
         } else {
             // We are out of PiP mode. We can stop receiving events from it.
-            unregisterReceiver(mReceiver);
-            mReceiver = null;
-            // Show the video controls if the video is not playing
-            if (mMovieView != null && !mMovieView.isPlaying()) {
-                mMovieView.showControls();
-            }
+//            unregisterReceiver(mReceiver);
+//            mReceiver = null;
+//            // Show the video controls if the video is not playing
+//            if (imageView != null && !imageView.isPlaying()) {
+//                imageView.showControls();
+//            }
         }
     }
 
     /** Enters Picture-in-Picture mode. */
     void minimize() {
-        if (mMovieView == null) {
+        if (imageView == null) {
             return;
         }
         // Hide the controls in picture-in-picture mode.
-        mMovieView.hideControls();
+//        imageView.hideControls();
         // Calculate the aspect ratio of the PiP screen.
-        Rational aspectRatio = new Rational(mMovieView.getWidth(), mMovieView.getHeight());
+        Rational aspectRatio = new Rational(imageView.getWidth(), imageView.getHeight());
         mPictureInPictureParamsBuilder.setAspectRatio(aspectRatio).build();
         enterPictureInPictureMode(mPictureInPictureParamsBuilder.build());
     }
@@ -287,11 +283,11 @@ public class MainActivity extends AppCompatActivity {
                             | View.SYSTEM_UI_FLAG_FULLSCREEN
                             | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
             mScrollView.setVisibility(View.GONE);
-            mMovieView.setAdjustViewBounds(false);
+            imageView.setAdjustViewBounds(false);
         } else {
             decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
             mScrollView.setVisibility(View.VISIBLE);
-            mMovieView.setAdjustViewBounds(true);
+            imageView.setAdjustViewBounds(true);
         }
     }
 
